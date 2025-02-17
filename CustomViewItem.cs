@@ -41,7 +41,7 @@ internal partial class EditModeEnhanced {
 		var offset = new Vector3(sceneEdit.customViewWindow.WindowSize.x / 2 - sceneEdit.m_info.m_uiBase.width / 2, 0);
 
 		if (_config["AddTooltipFileName"]) {
-			AddItemInfoWindowFileName(sceneEdit.m_info, menuItem);
+			AddItemInfoWindowFileName(sceneEdit.m_info, menuItem.m_strMenuFileName);
 		}
 		SetItemInfoWindowPosition(sceneEdit.m_info, basePosition, offset);
 	}
@@ -52,8 +52,8 @@ internal partial class EditModeEnhanced {
 	}
 
 	// add body slot to custom view window
-	[HarmonyPatch(typeof(CustomViewItemData), nameof(CustomViewItemData.Create))]
 	[HarmonyPostfix]
+	[HarmonyPatch(typeof(CustomViewItemData), nameof(CustomViewItemData.Create))]
 	private static void CustomViewItemData_OnCreate() {
 		if (!_config["CustomViewBodySlot"]) return;
 
@@ -69,8 +69,8 @@ internal partial class EditModeEnhanced {
 	}
 
 	// delete items by right click in custom view window
-	[HarmonyPatch(typeof(CustomViewItem), nameof(CustomViewItem.OnClickButton))]
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(CustomViewItem), nameof(CustomViewItem.OnClickButton))]
 	private static bool CustomViewItem_OnClickButton(CustomViewItem __instance) {
 		if (!_config["CustomViewRightClickRemove"]) return true;
 		if (UICamera.currentTouchID != -2) return true;

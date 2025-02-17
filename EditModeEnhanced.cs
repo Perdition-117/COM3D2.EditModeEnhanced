@@ -16,25 +16,36 @@ internal partial class EditModeEnhanced : BaseUnityPlugin {
 		Harmony.CreateAndPatchAll(typeof(EditModeEnhanced));
 	}
 
-	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.HoverOverCallback))]
-	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.HoverOverCallbackOnGroup))]
-	[HarmonyPostfix]
-	private static void OnHoverOverCallback(SceneEdit __instance) {
-		var button = UIEventTrigger.current.GetComponentInChildren<ButtonEdit>();
+	private static void SetItemInfoWindowPosition(ItemInfoWnd itemInfoWindow) {
 		var sprite = UIEventTrigger.current.GetComponentInChildren<UI2DSprite>();
-
 		var position = new Vector3(-337, UIEventTrigger.current.transform.parent.position.y);
 		var offset = new Vector3(0, -(sprite.height - BaseButtonHeight) / 2);
+		SetItemInfoWindowPosition(itemInfoWindow, position, offset, true);
+	}
 
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.HoverOverCallback))]
+	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.HoverOverCallbackOnGroup))]
+	private static void SceneEdit_OnHoverOverCallback(SceneEdit __instance) {
 		if (_config["AddTooltipFileName"]) {
-			AddItemInfoWindowFileName(__instance.m_info, button.m_MenuItem);
+			var button = UIEventTrigger.current.GetComponentInChildren<ButtonEdit>();
+			AddItemInfoWindowFileName(__instance.m_info, button.m_MenuItem.m_strMenuFileName);
 		}
-		SetItemInfoWindowPosition(__instance.m_info, position, offset, true);
+		SetItemInfoWindowPosition(__instance.m_info);
+	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(ShopItem), nameof(ShopItem.OnHoverOver))]
+	private static void ShopItem_OnHoverOver(ShopItem __instance) {
+		if (_config["AddTooltipFileName"] && __instance.item_data.type == Shop.ItemDataBase.Type.Parts && __instance.item_data.item_menu_array.Length > 0) {
+			AddItemInfoWindowFileName(__instance.info_window_, string.Join("\n", __instance.item_data.trial_wear_item_menu_array));
+		}
+		SetItemInfoWindowPosition(__instance.info_window_);
 	}
 
 	// skip set variation panel for single color sets
-	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.ClickCallbackFromSetGroup))]
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(SceneEdit), nameof(SceneEdit.ClickCallbackFromSetGroup))]
 	static bool SceneEdit_OnClickCallbackFromSetGroup(SceneEdit __instance) {
 		if (!_config["SingleColorSetEquip"]) return true;
 

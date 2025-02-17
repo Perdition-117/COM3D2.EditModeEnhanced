@@ -24,8 +24,8 @@ internal partial class EditModeEnhanced {
 		__instance.m_uiInfo.overflowMethod = UILabel.Overflow.ResizeHeight;
 	}
 
-	private static void AddItemInfoWindowFileName(ItemInfoWnd itemInfoWindow, SceneEdit.SMenuItem menuItem) {
-		itemInfoWindow.m_uiInfo.text += "\n\n" + menuItem.m_strMenuFileName;
+	private static void AddItemInfoWindowFileName(ItemInfoWnd itemInfoWindow, string menuFileName) {
+		itemInfoWindow.m_uiInfo.text += "\n\n" + menuFileName;
 	}
 
 	private static void SetItemInfoWindowPosition(ItemInfoWnd itemInfoWindow, Vector3 basePosition, Vector3 offset, bool setLocalX = false) {

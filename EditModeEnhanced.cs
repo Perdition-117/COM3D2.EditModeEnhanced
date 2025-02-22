@@ -37,7 +37,7 @@ internal partial class EditModeEnhanced : BaseUnityPlugin {
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ShopItem), nameof(ShopItem.OnHoverOver))]
 	private static void ShopItem_OnHoverOver(ShopItem __instance) {
-		if (_config["AddTooltipFileName"] && __instance.item_data.type == Shop.ItemDataBase.Type.Parts && __instance.item_data.item_menu_array.Length > 0) {
+		if (_config["AddTooltipFileName"] && __instance.item_data.type == Shop.ItemDataBase.Type.Parts && __instance.item_data.trial_wear_item_menu_array.Length > 0) {
 			AddItemInfoWindowFileName(__instance.info_window_, string.Join("\n", __instance.item_data.trial_wear_item_menu_array));
 		}
 		SetItemInfoWindowPosition(__instance.info_window_);

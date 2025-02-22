@@ -8,8 +8,8 @@ namespace COM3D2.EditModeEnhanced;
 
 internal partial class EditModeEnhanced {
 	private static readonly Dictionary<MPN, string> DefaultItems = new() {
-		[MPN.nose] = "nose_del_i_.menu",
-		[MPN.facegloss] = "facegloss_del_i_.menu",
+		[Mpn.nose] = "nose_del_i_.menu",
+		[Mpn.facegloss] = "facegloss_del_i_.menu",
 	};
 
 	// add tooltips to custom view window
@@ -65,10 +65,10 @@ internal partial class EditModeEnhanced {
 	private static void CustomViewItemData_OnCreate() {
 		if (!_config["CustomViewBodySlot"]) return;
 
-		if (SceneEditInfo.m_dicPartsTypePair.ContainsKey(MPN.body) && !CustomViewItemData.itemList.Exists(e => e.mpn == MPN.body)) {
+		if (SceneEditInfo.m_dicPartsTypePair.ContainsKey(Mpn.body) && !CustomViewItemData.itemList.Exists(e => e.mpn == Mpn.body)) {
 			CustomViewItemData.itemList.Add(new() {
 				page = 1,
-				mpn = MPN.body,
+				mpn = Mpn.body,
 				iconTexName = "customview_icon_skin.tex",
 				requestNewFace = false,
 				requestFBFace = false,

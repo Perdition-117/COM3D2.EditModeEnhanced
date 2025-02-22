@@ -1,14 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <Product>EditModeEnhanced</Product>
+    <Version>1.1.0</Version>
+    <Authors>Perdition</Authors>
+    <PackageProjectUrl>https://github.com/Perdition-117/COM3D2.EditModeEnhanced</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Perdition-117/COM3D2.EditModeEnhanced.git</RepositoryUrl>
+  </PropertyGroup>
 
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Product>EditModeEnhanced</Product>
-    <Version>1.0.0</Version>
-    <Authors>Perdition</Authors>
-    <PackageProjectUrl>https://github.com/Perdition-117/COM3D2.EditModeEnhanced</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Perdition-117/COM3D2.EditModeEnhanced.git</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">

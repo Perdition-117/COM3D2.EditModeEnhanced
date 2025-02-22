@@ -1,21 +1,27 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 
 namespace COM3D2.EditModeEnhanced;
 
+enum ItemTooltipStyle {
+	None,
+	Minimal,
+	Default,
+}
+
 internal class Configuration {
-	private readonly ConfigFile _config;
-
 	private readonly Dictionary<string, ConfigEntry<bool>> _configEntries = new();
+	private readonly ConfigEntry<ItemTooltipStyle> _configItemTooltipStyle;
 
-	private readonly Option[] _options = new Option[] {
+	private readonly Option[] _options = {
 		new() {
 			Key = "CustomViewRightClickRemove",
-			Description = "Enable right clicking to remove items in custom view",
+			Description = "Enables right clicking to remove items in custom view",
 		},
 		new() {
 			Key = "CustomViewTooltip",
-			Description = "Show tooltip for items in custom view",
+			Description = "Shows tooltip for items in custom view",
 		},
 		new() {
 			Key = "CustomViewBodySlot",
@@ -23,23 +29,30 @@ internal class Configuration {
 		},
 		new() {
 			Key = "SingleColorSetEquip",
-			Description = "Equip single color sets without showing the color panel",
+			Description = "Equips single color sets without showing the color panel",
 		},
 		new() {
 			Key = "AddTooltipFileName",
-			Description = "Add menu file name to item tooltip",
+			Description = "Adds menu file name to item tooltip",
 		},
 	};
 
 	public Configuration(ConfigFile config) {
-		_config = config;
-
 		foreach (var option in _options) {
-			_configEntries.Add(option.Key, _config.Bind("General", option.Key, true, option.Description));
+			_configEntries.Add(option.Key, config.Bind("General", option.Key, true, option.Description));
 		}
+
+		_configItemTooltipStyle = config.Bind("General", "ItemTooltipStyle", ItemTooltipStyle.Default, "Sets the item tooltip style");
 	}
 
-	public bool this[string option] { get => _configEntries[option].Value; }
+	public event EventHandler ItemTooltipStyleChange {
+		add => _configItemTooltipStyle.SettingChanged += value;
+		remove => _configItemTooltipStyle.SettingChanged -= value;
+	}
+
+	public ItemTooltipStyle ItemTooltipStyle => _configItemTooltipStyle.Value;
+
+	public bool this[string key] => _configEntries[key].Value;
 
 	private class Option {
 		public string Key { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using SceneEditWindow;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace COM3D2.EditModeEnhanced;
 
 internal partial class EditModeEnhanced {
-	private static readonly Dictionary<MPN, string> DeleteItems = new() {
+	private static readonly Dictionary<MPN, string> DefaultItems = new() {
 		[MPN.nose] = "nose_del_i_.menu",
 		[MPN.facegloss] = "facegloss_del_i_.menu",
 	};
@@ -21,16 +22,15 @@ internal partial class EditModeEnhanced {
 	}
 
 	private static void OnHoverOver() {
-		if (!_config["CustomViewTooltip"]) return;
+		if (!_config["CustomViewTooltip"] || _config.ItemTooltipStyle == ItemTooltipStyle.None) {
+			return;
+		}
 
 		var button = UIEventTrigger.current;
 		var customViewItem = button.GetComponentInParent<CustomViewItem>();
 		var sceneEdit = customViewItem.sceneEdit;
 		var menuItem = customViewItem.GetMenuItem(sceneEdit.maid, customViewItem.mpn);
-		if (menuItem == null) {
-			return;
-		}
-		if ((CM3.dicDelItem.TryGetValue(customViewItem.mpn, out var deleteItem) || DeleteItems.TryGetValue(customViewItem.mpn, out deleteItem)) && menuItem.m_strMenuFileName.ToLower() == deleteItem.ToLower()) {
+		if (menuItem == null || IsDefaultItem(customViewItem.mpn, menuItem.m_strMenuFileName)) {
 			return;
 		}
 
@@ -38,7 +38,7 @@ internal partial class EditModeEnhanced {
 		sceneEdit.m_info.Open(position, menuItem.m_texIconRef, menuItem.menuNameCurrentLanguage, menuItem.infoTextCurrentLanguage);
 
 		var basePosition = new Vector3(sceneEdit.customViewWindow.transform.position.x, position.y);
-		var offset = new Vector3(sceneEdit.customViewWindow.WindowSize.x / 2 - sceneEdit.m_info.m_uiBase.width / 2, 0);
+		var offset = new Vector3(sceneEdit.customViewWindow.WindowSize.x, 0) / 2;
 
 		if (_config["AddTooltipFileName"]) {
 			AddItemInfoWindowFileName(sceneEdit.m_info, menuItem.m_strMenuFileName);
@@ -49,6 +49,14 @@ internal partial class EditModeEnhanced {
 	private static void OnHoverOut() {
 		var customViewItem = UIEventTrigger.current.GetComponentInParent<CustomViewItem>();
 		customViewItem.sceneEdit.m_info.Close();
+	}
+
+	private static bool IsDefaultItem(MPN mpn, string menuFileName) {
+		return TryGetDefaultItem(mpn, out var defaultItem) && menuFileName.Equals(defaultItem, StringComparison.OrdinalIgnoreCase);
+	}
+
+	private static bool TryGetDefaultItem(MPN mpn, out string defaultFileName) {
+		return CM3.dicDelItem.TryGetValue(mpn, out defaultFileName) || DefaultItems.TryGetValue(mpn, out defaultFileName);
 	}
 
 	// add body slot to custom view window
@@ -86,8 +94,8 @@ internal partial class EditModeEnhanced {
 			sceneEdit.m_info.Close();
 		}
 
-		if (DeleteItems.TryGetValue(mpn, out var deleteItem)) {
-			maid.SetProp(mpn, deleteItem, 0, isTemp);
+		if (DefaultItems.TryGetValue(mpn, out var defaultItem)) {
+			maid.SetProp(mpn, defaultItem, 0, isTemp);
 			SceneEdit.AllProcPropSeqStart(maid);
 			sceneEdit.m_info.Close();
 		}

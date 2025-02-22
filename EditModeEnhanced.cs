@@ -12,8 +12,8 @@ internal partial class EditModeEnhanced : BaseUnityPlugin {
 
 	void Awake() {
 		_config = new Configuration(Config);
-
 		Harmony.CreateAndPatchAll(typeof(EditModeEnhanced));
+		ItemInfoWnd_Awake();
 	}
 
 	private static void SetItemInfoWindowPosition(ItemInfoWnd itemInfoWindow) {

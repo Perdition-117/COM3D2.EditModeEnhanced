@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+  <PropertyGroup>
     <Product>EditModeEnhanced</Product>
     <Version>1.1.0</Version>
     <Authors>Perdition</Authors>

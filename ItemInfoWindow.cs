@@ -135,7 +135,7 @@ internal partial class EditModeEnhanced {
 			vecOffsetPos.y += uiBase.height;
 		}
 
-		if (transform.localPosition.x - uiBase.width < -1180) {
+		if (!setLocalX && transform.localPosition.x - uiBase.width < -1180) {
 			vecOffsetPos.x *= -1;
 			vecOffsetPos.x += 58;
 			vecOffsetPos.x -= uiBase.width;

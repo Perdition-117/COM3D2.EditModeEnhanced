@@ -4,6 +4,7 @@ Minor tweaks for edit mode.
 
 - Enables right clicking to remove items in custom view
 - Shows tooltip for items in custom view
+- Shows tooltip for presets
 - Adds minimal item tooltip option, removing icon and description
 - Adds body slot to custom view (requires COM3D2.BodyCategoryAdd)
 - Equips single color sets without showing the color panel

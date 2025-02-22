@@ -35,6 +35,10 @@ internal class Configuration {
 			Key = "AddTooltipFileName",
 			Description = "Adds menu file name to item tooltip",
 		},
+		new() {
+			Key = "PresetTooltip",
+			Description = "Shows tooltip for presets",
+		},
 	};
 
 	public Configuration(ConfigFile config) {

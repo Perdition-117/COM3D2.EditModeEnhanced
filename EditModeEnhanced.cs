@@ -1,4 +1,6 @@
-﻿using BepInEx;
+using System.Collections.Generic;
+using System.IO;
+using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 
@@ -60,5 +62,44 @@ internal partial class EditModeEnhanced : BaseUnityPlugin {
 		__instance.ClickCallback();
 		__instance.m_Panel_GroupSet.SetActive(false);
 		return false;
+	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PresetCtrl), nameof(PresetCtrl.CreatePresetList))]
+	private static void CreatePresetList(PresetCtrl __instance, List<CharacterMgr.Preset> listPreset) {
+		if (listPreset == null) {
+			return;
+		}
+		foreach (var presetButton in __instance.m_dicPresetButton.Values) {
+			var eventTrigger = presetButton.presetButton.GetOrAddComponent<UIEventTrigger>();
+			EventDelegate.Add(eventTrigger.onHoverOver, PresetButton_OnHoverOver);
+			EventDelegate.Add(eventTrigger.onHoverOut, PresetButton_OnHoverOut);
+			EventDelegate.Add(eventTrigger.onDragOut, PresetButton_OnHoverOut);
+		}
+	}
+
+	private static void PresetButton_OnHoverOver() {
+		if (!_config["PresetTooltip"] || _config.ItemTooltipStyle == ItemTooltipStyle.None) {
+			return;
+		}
+
+		var button = UIEventTrigger.current;
+
+		if (!BaseMgr<PresetMgr>.Instance.m_presetCtrl.m_dicPresetButton.TryGetValue(button.name, out var presetButton)) {
+			return;
+		}
+
+		var preset = presetButton.preset;
+		var position = button.transform.position;
+		SceneEdit.Instance.m_info.Open(position, preset.texThum, Path.GetFileNameWithoutExtension(preset.strFileName), string.Empty);
+
+		var texture = button.GetComponentInChildren<UITexture>();
+		var basePosition = new Vector3(-505, UIEventTrigger.current.transform.position.y);
+		var offset = new Vector3(0, -(texture.height - BaseButtonHeight) / 2);
+		SetItemInfoWindowPosition(SceneEdit.Instance.m_info, basePosition, offset, true);
+	}
+
+	private static void PresetButton_OnHoverOut() {
+		SceneEdit.Instance.m_info.Close();
 	}
 }

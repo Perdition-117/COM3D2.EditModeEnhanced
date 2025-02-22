@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace COM3D2.EditModeEnhanced;
 
-[BepInPlugin("net.perdition.com3d2.editmodeenhanced", PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+[BepInPlugin("net.perdition.com3d2.editmodeenhanced", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 internal partial class EditModeEnhanced : BaseUnityPlugin {
 	private const int BaseButtonHeight = 80;
 
